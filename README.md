@@ -40,7 +40,9 @@ npm run dev:backend             # http://localhost:3000   (separate terminal)
 npm run dev:frontend            # http://localhost:5173   (separate terminal)
 ```
 
-Register an account on the login page and analyze one of the example tickets.
+There are no pre-seeded users. On the login page click **"No account? Register"** and create one with any email
+(a made-up one is fine, nothing is sent or verified) and a password of at least 8 characters. Then analyze one of
+the "Example" tickets.
 
 **Everything in containers** (API + web via nginx + Postgres):
 
