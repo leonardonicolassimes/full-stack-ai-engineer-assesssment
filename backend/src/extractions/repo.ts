@@ -92,3 +92,9 @@ export async function fail(
   );
   return rows[0];
 }
+
+/** Retention: hard-delete expired AI inputs/outputs. Returns how many rows were removed. */
+export async function purgeExpired(): Promise<number> {
+  const { rowCount } = await pool.query('DELETE FROM extractions WHERE expires_at <= now()');
+  return rowCount ?? 0;
+}
