@@ -15,5 +15,35 @@ services:
       timeout: 3s
       retries: 10
 
+  # Full stack in containers: `docker compose --profile full up --build`
+  migrate:
+    profiles: ["full"]
+    build: { context: ., dockerfile: backend/Dockerfile }
+    command: ["node", "backend/dist/db/migrate.js"]
+    environment:
+      DATABASE_URL: postgres://app:app@postgres:5432/app
+      JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me-0123456789abcdef}
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  api:
+    profiles: ["full"]
+    build: { context: ., dockerfile: backend/Dockerfile }
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://app:app@postgres:5432/app
+      CORS_ORIGIN: http://localhost:8080
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    ports:
+      - "3000:3000"
+
+  web:
+    profiles: ["full"]
+    build: { context: ., dockerfile: frontend/Dockerfile }
+    depends_on: [api]
+    ports:
+      - "8080:80"
+
 volumes:
   pgdata:
