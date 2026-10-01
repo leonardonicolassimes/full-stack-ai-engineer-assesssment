@@ -5,6 +5,7 @@ import jwt from '@fastify/jwt';
 import rateLimit from '@fastify/rate-limit';
 import { ZodError } from 'zod';
 import { config } from './config.js';
+import { AppError } from './errors.js';
 import { authRoutes } from './auth/routes.js';
 import { extractionRoutes } from './extractions/routes.js';
 
@@ -44,6 +45,8 @@ export async function buildApp() {
     if (err instanceof ZodError) {
       return reply.code(400).send({ error: 'Validation failed', details: err.issues });
     }
+    // AppError messages are written to be client-safe (no provider internals).
+    if (err instanceof AppError) return reply.code(err.statusCode).send({ error: err.message });
     if (err.statusCode && err.statusCode < 500) return reply.code(err.statusCode).send({ error: err.message });
     app.log.error(err);
     return reply.code(500).send({ error: 'Internal server error' });
