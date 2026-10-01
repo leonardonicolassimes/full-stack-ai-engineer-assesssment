@@ -1,0 +1,12 @@
+{
+  "name": "support-ticket-extractor",
+  "private": true,
+  "workspaces": ["backend", "frontend"],
+  "scripts": {
+    "dev:backend": "npm run dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "test": "npm test -w backend",
+    "db:up": "docker compose up -d postgres",
+    "migrate": "npm run migrate -w backend"
+  }
+}
